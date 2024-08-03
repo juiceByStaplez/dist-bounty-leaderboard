@@ -5,7 +5,7 @@ import prisma from "../../lib/prisma";
 export default async function Home() {
   async function getRuns() {
     "use server";
-    let leaderboard = await prisma.runs.findMany({
+    const leaderboard = await prisma.runs.findMany({
       orderBy: [
         {
           time: "asc",
@@ -13,13 +13,13 @@ export default async function Home() {
       ],
     });
 
-    leaderboard = leaderboard.map((run) => {
+    const leaderboardWithConvertedTimes = leaderboard.map((run) => {
       const time = secondsToTime(run.time);
 
       return { ...run, time };
     });
 
-    return leaderboard;
+    return leaderboardWithConvertedTimes;
   }
 
   const runs = await getRuns();
