@@ -1,33 +1,40 @@
-import Image from "next/image";
+"use client";
 
-import prisma from "../../lib/prisma";
+import { useState, useEffect } from "react";
 
-export default async function Home() {
-  async function getRuns() {
-    "use server";
-    const leaderboard = await prisma.runs.findMany({
-      orderBy: [
-        {
-          time: "asc",
-        },
-      ],
-    });
+import { getRuns } from "@/app/actions";
 
-    const leaderboardWithConvertedTimes = leaderboard.map((run) => {
-      const time = secondsToTime(run.time);
+type Run = {
+  name: string;
+  time: String;
+};
 
-      return { ...run, time };
-    });
+export default function Home() {
+  const [runs, setRuns] = useState<Run[]>([]);
 
-    return leaderboardWithConvertedTimes;
-  }
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const fetchedRuns = await getRuns();
 
-  const runs = await getRuns();
+        setRuns(fetchedRuns);
+      } catch (err) {
+        console.error("Error fetching data:", err);
+      } finally {
+        setTimeout(() => fetchData(), 300000);
+      }
+    }
+
+    fetchData();
+  }, []);
 
   return (
-    <main className="flex min-h-screen flex-col items-start p-4">
+    <main className="flex min-h-screen flex-col items-start rounded lg:p-4">
       {runs.map((run, index) => {
-        const className = index === 0 ? "fire" : "";
+        let className = index === 0 ? "fire rounded-t pt-2" : "";
+        if (index === 2) {
+          className = "rounded-b";
+        }
         let emoji = "🥇";
         if (index === 1) {
           emoji = "🥈";
@@ -35,8 +42,8 @@ export default async function Home() {
           emoji = "🥉";
         }
         return (
-          <div className={`entry ${className} flex`} key={index}>
-            <div className="flex emoji mr-4 text-left">{emoji}</div>
+          <div className={`entry ${className} w-full p-1`} key={index}>
+            <div className="flex emoji ml-2 mr-4 text-left">{emoji}</div>
             <span className="flex mr-4">{run.time}</span>
             <span className="flex">{run.name}</span>
           </div>
@@ -44,9 +51,4 @@ export default async function Home() {
       })}
     </main>
   );
-}
-
-function secondsToTime(seconds: number): String {
-  const time = new Date(seconds * 1000).toISOString().slice(11, 19);
-  return time;
 }
