@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { getRuns } from "@/app/actions";
 
@@ -41,60 +41,65 @@ export default function Home() {
   }, [limit]);
 
   return (
-    <main className="flex min-h-screen flex-col items-start rounded lg:p-4">
-      {runs.map((run, index) => {
-        let className = index === 0 ? "fire rounded-t pt-2" : "";
-        if (index === 2) {
-          className = "rounded-b";
-        }
-        let emoji = "🥇";
+    <Suspense>
+      <main className="flex min-h-screen flex-col items-start rounded lg:p-4">
+        {runs.map((run, index) => {
+          let className = index === 0 ? "fire rounded-t pt-2" : "";
+          if (index === 2) {
+            className = "rounded-b";
+          }
+          let emoji = "🥇";
 
-        switch (index) {
-          case 1:
+          switch (index) {
+            case 0:
+              emoji = "🥇";
+              break;
+            case 1:
+              emoji = "🥈";
+              break;
+            case 2:
+              emoji = "🥉";
+              break;
+            case 3:
+              emoji = "4️⃣";
+              break;
+            case 4:
+              emoji = "5️⃣";
+              break;
+            case 5:
+              emoji = "6️⃣";
+              break;
+            case 6:
+              emoji = "7️⃣";
+              break;
+            case 7:
+              emoji = "8️⃣";
+              break;
+            case 8:
+              emoji = "9️⃣";
+              break;
+            case 9:
+              emoji = "🔟";
+              break;
+            default:
+              emoji = "🕙";
+              break;
+          }
+
+          if (index === 1) {
             emoji = "🥈";
-            break;
-          case 2:
+          } else if (index === 2) {
             emoji = "🥉";
-            break;
-          case 3:
-            emoji = "4️⃣";
-            break;
-          case 4:
-            emoji = "5️⃣";
-            break;
-          case 5:
-            emoji = "6️⃣";
-            break;
-          case 6:
-            emoji = "7️⃣";
-            break;
-          case 7:
-            emoji = "8️⃣";
-            break;
-          case 8:
-            emoji = "9️⃣";
-            break;
-          case 9:
-            emoji = "🔟";
-            break;
-          default:
-            emoji = "🕙";
-            break;
-        }
-
-        if (index === 1) {
-          emoji = "🥈";
-        } else if (index === 2) {
-          emoji = "🥉";
-        }
-        return (
-          <div className={`entry ${className} w-full p-1`} key={index}>
-            <div className="flex emoji ml-2 mr-4 text-left">{emoji}</div>
-            <span className="flex mr-4">{run.time}</span>
-            <span className="flex">{run.name}</span>
-          </div>
-        );
-      })}
-    </main>
+          }
+          return (
+            <div className={`entry ${className} w-full p-1`} key={index}>
+              <div className="flex emoji ml-2 mr-4 text-left">{emoji}</div>
+              <span className="flex mr-4">{run.time}</span>
+              <span className="flex">{run.name}</span>
+            </div>
+          );
+        })}
+      </main>
+    </Suspense>
   );
 }
