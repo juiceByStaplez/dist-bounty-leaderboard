@@ -1,8 +1,9 @@
 "use server";
 import prisma from "@/app/lib/prisma";
 
-export async function getRuns() {
+export async function getRuns(limit: number) {
   const leaderboard = await prisma.runs.findMany({
+    take: limit,
     orderBy: [
       {
         time: "asc",
