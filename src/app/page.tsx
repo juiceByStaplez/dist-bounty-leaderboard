@@ -25,11 +25,20 @@ export default async function Home() {
   const runs = await getRuns();
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <main className="flex min-h-screen flex-col items-start p-4">
       {runs.map((run, index) => {
+        const className = index === 0 ? "fire" : "";
+        let emoji = "🥇";
+        if (index === 1) {
+          emoji = "🥈";
+        } else if (index === 2) {
+          emoji = "🥉";
+        }
         return (
-          <div className="entry" key={index}>
-            {run.name} - {run.time}
+          <div className={`entry ${className} flex`} key={index}>
+            <div className="flex emoji mr-4 text-left">{emoji}</div>
+            <span className="flex mr-4">{run.time}</span>
+            <span className="flex">{run.name}</span>
           </div>
         );
       })}
